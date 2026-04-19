@@ -3,21 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ultra Pro Website</title>
+<title>Pro Slider Website</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}
 
 body{
-    transition:0.4s;
     background:#0f172a;
     color:white;
-}
-
-/* Dark/Light */
-.light{
-    background:#f4f4f4;
-    color:black;
 }
 
 /* Navbar */
@@ -26,9 +19,6 @@ nav{
     justify-content:space-between;
     padding:15px 30px;
     background:#111;
-    position:sticky;
-    top:0;
-    z-index:100;
 }
 
 nav a{
@@ -40,29 +30,56 @@ nav a{
 /* Hero */
 .hero{
     text-align:center;
-    padding:80px 20px;
+    padding:40px 20px;
 }
 
-.hero h1{
-    font-size:2.5rem;
+/* Slider */
+.slider{
+    width:90%;
+    max-width:600px;
+    margin:30px auto;
+    position:relative;
+    overflow:hidden;
+    border-radius:15px;
 }
 
-/* Button */
+.slides{
+    display:flex;
+    transition:0.5s;
+}
+
+.slides img{
+    width:100%;
+    border-radius:15px;
+}
+
+/* Buttons */
 .btn{
-    padding:10px 20px;
-    background:#38bdf8;
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:rgba(0,0,0,0.6);
     border:none;
-    border-radius:20px;
+    color:white;
+    font-size:20px;
+    padding:10px 15px;
     cursor:pointer;
-    margin-top:10px;
+    border-radius:50%;
+}
+
+.prev{left:10px;}
+.next{right:10px;}
+
+.btn:hover{
+    background:#38bdf8;
 }
 
 /* Cards */
 .cards{
     display:flex;
     justify-content:center;
-    flex-wrap:wrap;
     gap:20px;
+    flex-wrap:wrap;
     padding:40px;
 }
 
@@ -70,19 +87,15 @@ nav a{
     background:white;
     color:black;
     padding:20px;
-    width:220px;
-    border-radius:15px;
-    opacity:0;
-    transform:translateY(50px);
-    transition:0.5s;
+    width:200px;
+    border-radius:10px;
+    transition:0.3s;
 }
 
-.card.show{
-    opacity:1;
-    transform:translateY(0);
+.card:hover{
+    transform:scale(1.1);
 }
 
-/* Footer */
 footer{
     text-align:center;
     padding:15px;
@@ -96,42 +109,59 @@ footer{
 <nav>
     <h2>MySite</h2>
     <div>
-        <a href="#home">Home</a>
-        <a href="#services">Services</a>
-        <button onclick="toggleMode()">🌙</button>
+        <a href="#">Home</a>
+        <a href="#">Services</a>
     </div>
 </nav>
 
-<div class="hero" id="home">
-    <h1>Ultra Pro Website 🚀</h1>
-    <p>Dark Mode + Animation + Smooth UI</p>
-    <button class="btn">Explore</button>
+<div class="hero">
+    <h1>Pro Slider Website 🚀</h1>
 </div>
 
-<div class="cards" id="services">
-    <div class="card">🔥 Fast Website</div>
-    <div class="card">🎨 Modern Design</div>
-    <div class="card">⚡ Smooth Animation</div>
+<!-- SLIDER -->
+<div class="slider">
+    <div class="slides" id="slideBox">
+        <img src="https://picsum.photos/600/300?1">
+        <img src="https://picsum.photos/600/300?2">
+        <img src="https://picsum.photos/600/300?3">
+    </div>
+
+    <button class="btn prev" onclick="prevSlide()">❮</button>
+    <button class="btn next" onclick="nextSlide()">❯</button>
+</div>
+
+<!-- CARDS -->
+<div class="cards">
+    <div class="card">🔥 Fast</div>
+    <div class="card">🎨 Design</div>
+    <div class="card">⚡ Smooth</div>
 </div>
 
 <footer>
-    <p>© 2026 Ultra Pro</p>
+    <p>© 2026 My Website</p>
 </footer>
 
 <script>
-function toggleMode(){
-    document.body.classList.toggle("light");
+let index = 0;
+const slides = document.getElementById("slideBox");
+const total = slides.children.length;
+
+function showSlide(){
+    slides.style.transform = `translateX(-${index * 100}%)`;
 }
 
-/* Scroll animation */
-window.addEventListener("scroll",()=>{
-    document.querySelectorAll(".card").forEach(card=>{
-        let top=card.getBoundingClientRect().top;
-        if(top<window.innerHeight-50){
-            card.classList.add("show");
-        }
-    });
-});
+function nextSlide(){
+    index = (index + 1) % total;
+    showSlide();
+}
+
+function prevSlide(){
+    index = (index - 1 + total) % total;
+    showSlide();
+}
+
+/* Auto slide */
+setInterval(nextSlide,3000);
 </script>
 
 </body>
