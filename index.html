@@ -1,7 +1,10 @@
-<!DOCTYPE html><html>
+<!DOCTYPE html>
+<html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Super App Ultra</title><style>
+<title>Super App Ultra</title>
+
+<style>
 body{
   margin:0;
   font-family:sans-serif;
@@ -22,8 +25,6 @@ nav{
   justify-content:space-around;
   background:#1f2937;
   padding:10px;
-  position:sticky;
-  top:0;
 }
 
 nav button{
@@ -32,7 +33,6 @@ nav button{
   border-radius:10px;
   background:#38bdf8;
   font-weight:bold;
-  cursor:pointer;
 }
 
 section{
@@ -42,11 +42,10 @@ section{
 
 .active{display:block;}
 
-input,button{
-  padding:10px;
-  margin:5px;
-  border-radius:8px;
-  border:none;
+.big{
+  font-size:28px;
+  text-align:center;
+  margin-top:50px;
 }
 
 .card{
@@ -57,110 +56,81 @@ input,button{
   border-radius:12px;
 }
 
-.msg{
-  background:#1e293b;
-  padding:8px;
-  margin:5px;
-  border-radius:8px;
-}
-
 img{
-  width:120px;
-  margin:5px;
+  width:100%;
   border-radius:10px;
 }
 
-.small{
-  font-size:12px;
-  opacity:0.7;
+.back{
+  background:red;
+  color:white;
+  padding:8px;
+  border:none;
+  border-radius:8px;
+  margin-bottom:10px;
 }
 
-.like{
-  color:#38bdf8;
-  cursor:pointer;
-}
+</style>
+</head>
 
-</style></head><body><header>🚀 Super App ULTRA</header><nav>
+<body>
+
+<header>🚀 Super App ULTRA</header>
+
+<nav>
 <button onclick="show('home')">🏠 Home</button>
-<button onclick="show('chat')">💬 Chat</button>
 <button onclick="show('store')">🛒 Store</button>
-<button onclick="show('insta')">📸 Insta</button>
-<button onclick="show('profile')">👤 Profile</button>
-</nav><!-- HOME --><section id="home" class="active">
-<h2>Welcome 🔥</h2>
-<p>Next Level Multi App System</p>
-</section><!-- PROFILE / LOGIN --><section id="profile">
-<h2>Profile 👤</h2>
-<input id="username" placeholder="Enter name">
-<button onclick="saveUser()">Save</button>
-<p id="userShow"></p>
-</section><!-- CHAT --><section id="chat">
-<h2>Live Chat 💬</h2>
-<div id="chatBox"></div>
-<input id="chatMsg" placeholder="Message">
-<button onclick="sendMsg()">Send</button>
-</section><!-- STORE --><section id="store">
-<h2>Store 🛒</h2>
-<p>Cart: <span id="cartCount">0</span></p>
-<div class="card">T-shirt ₹500 <button onclick="addCart(500)">Add</button></div>
-<div class="card">Shoes ₹1000 <button onclick="addCart(1000)">Add</button></div>
-<button onclick="checkout()">Checkout</button>
-</section><!-- INSTA --><section id="insta">
-<h2>Insta Feed 📸</h2>
-<input type="file" id="file">
-<button onclick="upload()">Upload</button>
-<div id="feed"></div>
-</section><script>
-let cart = 0;
+<button onclick="openInsta()">📸 Insta</button>
+</nav>
 
-// Load user
-let user = localStorage.getItem("user") || "Guest";
-document.getElementById("userShow").innerText = "Hello " + user;
+<!-- HOME PAGE -->
+<section id="home" class="active">
+<div class="big">
+🔥 Welcome to My First Website 🔥
+</div>
 
-window.show = (id)=>{
+<div style="text-align:center;margin-top:30px;">
+<button onclick="openInsta()">Open Instagram</button>
+</div>
+</section>
+
+<!-- STORE PAGE -->
+<section id="store">
+<button class="back" onclick="show('home')">⬅ Back</button>
+
+<h2>T-Shirt Store 👕</h2>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab">
+<p>Cool T-Shirt ₹500</p>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb">
+<p>Black Style T-Shirt ₹700</p>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b">
+<p>Printed T-Shirt ₹650</p>
+</div>
+
+</section>
+
+<script>
+
+// Page switch
+function show(id){
   document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
-};
+}
 
-window.saveUser = ()=>{
-  let u = username.value;
-  if(u){
-    localStorage.setItem("user",u);
-    userShow.innerText = "Hello " + u;
-  }
-};
+// Instagram open
+function openInsta(){
+  window.open("https://www.instagram.com/nobita__shizuka__0?igsh=MTdibjRya2g0amwyMQ==", "_blank");
+}
 
-window.sendMsg = ()=>{
-  let msg = chatMsg.value;
-  if(msg){
-    let time = new Date().toLocaleTimeString();
-    chatBox.innerHTML += `<div class='msg'><b>${user}:</b> ${msg}<div class='small'>${time}</div></div>`;
-    chatMsg.value="";
-  }
-};
+</script>
 
-window.addCart = (p)=>{
-  cart++;
-  cartCount.innerText = cart;
-};
-
-window.checkout = ()=>{
-  alert("Checkout Done! Items: " + cart);
-  cart = 0;
-  cartCount.innerText = cart;
-};
-
-window.upload = ()=>{
-  const file = document.getElementById("file").files[0];
-  if(file){
-    const url = URL.createObjectURL(file);
-    feed.innerHTML += `<div class='card'><img src='${url}'><br><span class='like' onclick='like(this)'>❤️ Like</span> <span>0</span></div>`;
-  }
-};
-
-window.like = (el)=>{
-  let count = el.nextElementSibling;
-  count.innerText = parseInt(count.innerText)+1;
-};
-</script></body>
+</body>
 </html>
