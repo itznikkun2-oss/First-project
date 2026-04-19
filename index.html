@@ -2,81 +2,93 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pro App</title>
+<title>Super App</title>
 
 <style>
-body{font-family:sans-serif;text-align:center;background:#0f172a;color:white}
-input,button{padding:10px;margin:5px;border:none;border-radius:5px}
-button{background:#38bdf8}
+body{font-family:sans-serif;background:#0f172a;color:white;text-align:center}
+nav button{margin:5px;padding:10px;border:none;border-radius:5px;background:#38bdf8}
+section{display:none;padding:20px}
+.active{display:block}
+input{padding:10px;margin:5px}
+.msg{background:#1e293b;padding:8px;margin:5px;border-radius:5px}
+.card{background:white;color:black;margin:10px;padding:10px;border-radius:10px}
+img{width:100px;border-radius:10px}
 </style>
 </head>
 
 <body>
 
-<h2>Login / Signup 🔐</h2>
+<nav>
+<button onclick="show('chat')">💬 Chat</button>
+<button onclick="show('store')">🛒 Store</button>
+<button onclick="show('insta')">📸 Insta</button>
+</nav>
 
-<input id="email" placeholder="Email"><br>
-<input id="pass" type="password" placeholder="Password"><br>
+<!-- CHAT -->
+<section id="chat" class="active">
+<h2>Live Chat 💬</h2>
+<div id="chatBox"></div>
+<input id="chatMsg" placeholder="Message">
+<button onclick="sendMsg()">Send</button>
+</section>
 
-<button onclick="signup()">Signup</button>
-<button onclick="login()">Login</button>
-<button onclick="logout()">Logout</button>
+<!-- STORE -->
+<section id="store">
+<h2>Store 🛒</h2>
+<div class="card">T-shirt - ₹500 <button>Add</button></div>
+<div class="card">Shoes - ₹1000 <button>Add</button></div>
+</section>
 
-<h3 id="user"></h3>
+<!-- INSTA -->
+<section id="insta">
+<h2>Insta Feed 📸</h2>
+<input type="file" id="file">
+<button onclick="upload()">Upload</button>
+<div id="feed"></div>
+</section>
 
-<hr>
-
-<h2>Contact Form 📩</h2>
-<input id="msg" placeholder="Message">
-<button onclick="send()">Send</button>
-
-<!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* 🔥 YAHAN APNA CONFIG DALO */
+/* 🔑 APNA CONFIG */
 const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_ID"
+  apiKey:"YOUR_KEY",
+  authDomain:"YOUR_DOMAIN",
+  projectId:"YOUR_ID"
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth();
 const db = getFirestore();
 
-/* Signup */
-window.signup = ()=>{
-  createUserWithEmailAndPassword(auth,
-    email.value, pass.value)
-    .then(()=>alert("Signup success"))
-    .catch(e=>alert(e.message));
+/* Tabs */
+window.show = (id)=>{
+  document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
 };
 
-/* Login */
-window.login = ()=>{
-  signInWithEmailAndPassword(auth,
-    email.value, pass.value)
-    .then(u=>{
-      document.getElementById("user").innerText = u.user.email;
-    })
-    .catch(e=>alert(e.message));
-};
-
-/* Logout */
-window.logout = ()=>{
-  signOut(auth);
-  user.innerText="";
-};
-
-/* Send message */
-window.send = async ()=>{
-  await addDoc(collection(db,"messages"),{
-    text: msg.value
+/* Chat */
+window.sendMsg = async ()=>{
+  await addDoc(collection(db,"chat"),{
+    text: chatMsg.value
   });
-  alert("Saved to database 😎");
+  chatMsg.value="";
+};
+
+onSnapshot(collection(db,"chat"),(snap)=>{
+  chatBox.innerHTML="";
+  snap.forEach(doc=>{
+    chatBox.innerHTML += `<div class="msg">${doc.data().text}</div>`;
+  });
+});
+
+/* Insta (fake preview) */
+window.upload = ()=>{
+  const file = document.getElementById("file").files[0];
+  if(file){
+    const url = URL.createObjectURL(file);
+    feed.innerHTML += `<img src="${url}">`;
+  }
 };
 </script>
 
