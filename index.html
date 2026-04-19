@@ -1,96 +1,166 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Super App</title>
+<title>Super App Ultra</title><style>
+body{
+  margin:0;
+  font-family:sans-serif;
+  background:linear-gradient(135deg,#0f172a,#1e293b);
+  color:white;
+}
 
-<style>
-body{font-family:sans-serif;background:#0f172a;color:white;text-align:center}
-nav button{margin:5px;padding:10px;border:none;border-radius:5px;background:#38bdf8}
-section{display:none;padding:20px}
-.active{display:block}
-input{padding:10px;margin:5px}
-.msg{background:#1e293b;padding:8px;margin:5px;border-radius:5px}
-.card{background:white;color:black;margin:10px;padding:10px;border-radius:10px}
-img{width:100px;border-radius:10px}
-</style>
-</head>
+header{
+  padding:15px;
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+  background:#111827;
+}
 
-<body>
+nav{
+  display:flex;
+  justify-content:space-around;
+  background:#1f2937;
+  padding:10px;
+  position:sticky;
+  top:0;
+}
 
-<nav>
+nav button{
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  background:#38bdf8;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+section{
+  display:none;
+  padding:15px;
+}
+
+.active{display:block;}
+
+input,button{
+  padding:10px;
+  margin:5px;
+  border-radius:8px;
+  border:none;
+}
+
+.card{
+  background:white;
+  color:black;
+  margin:10px;
+  padding:10px;
+  border-radius:12px;
+}
+
+.msg{
+  background:#1e293b;
+  padding:8px;
+  margin:5px;
+  border-radius:8px;
+}
+
+img{
+  width:120px;
+  margin:5px;
+  border-radius:10px;
+}
+
+.small{
+  font-size:12px;
+  opacity:0.7;
+}
+
+.like{
+  color:#38bdf8;
+  cursor:pointer;
+}
+
+</style></head><body><header>🚀 Super App ULTRA</header><nav>
+<button onclick="show('home')">🏠 Home</button>
 <button onclick="show('chat')">💬 Chat</button>
 <button onclick="show('store')">🛒 Store</button>
 <button onclick="show('insta')">📸 Insta</button>
-</nav>
-
-<!-- CHAT -->
-<section id="chat" class="active">
+<button onclick="show('profile')">👤 Profile</button>
+</nav><!-- HOME --><section id="home" class="active">
+<h2>Welcome 🔥</h2>
+<p>Next Level Multi App System</p>
+</section><!-- PROFILE / LOGIN --><section id="profile">
+<h2>Profile 👤</h2>
+<input id="username" placeholder="Enter name">
+<button onclick="saveUser()">Save</button>
+<p id="userShow"></p>
+</section><!-- CHAT --><section id="chat">
 <h2>Live Chat 💬</h2>
 <div id="chatBox"></div>
 <input id="chatMsg" placeholder="Message">
 <button onclick="sendMsg()">Send</button>
-</section>
-
-<!-- STORE -->
-<section id="store">
+</section><!-- STORE --><section id="store">
 <h2>Store 🛒</h2>
-<div class="card">T-shirt - ₹500 <button>Add</button></div>
-<div class="card">Shoes - ₹1000 <button>Add</button></div>
-</section>
-
-<!-- INSTA -->
-<section id="insta">
+<p>Cart: <span id="cartCount">0</span></p>
+<div class="card">T-shirt ₹500 <button onclick="addCart(500)">Add</button></div>
+<div class="card">Shoes ₹1000 <button onclick="addCart(1000)">Add</button></div>
+<button onclick="checkout()">Checkout</button>
+</section><!-- INSTA --><section id="insta">
 <h2>Insta Feed 📸</h2>
 <input type="file" id="file">
 <button onclick="upload()">Upload</button>
 <div id="feed"></div>
-</section>
+</section><script>
+let cart = 0;
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+// Load user
+let user = localStorage.getItem("user") || "Guest";
+document.getElementById("userShow").innerText = "Hello " + user;
 
-/* 🔑 APNA CONFIG */
-const firebaseConfig = {
-  apiKey:"YOUR_KEY",
-  authDomain:"YOUR_DOMAIN",
-  projectId:"YOUR_ID"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore();
-
-/* Tabs */
 window.show = (id)=>{
   document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 };
 
-/* Chat */
-window.sendMsg = async ()=>{
-  await addDoc(collection(db,"chat"),{
-    text: chatMsg.value
-  });
-  chatMsg.value="";
+window.saveUser = ()=>{
+  let u = username.value;
+  if(u){
+    localStorage.setItem("user",u);
+    userShow.innerText = "Hello " + u;
+  }
 };
 
-onSnapshot(collection(db,"chat"),(snap)=>{
-  chatBox.innerHTML="";
-  snap.forEach(doc=>{
-    chatBox.innerHTML += `<div class="msg">${doc.data().text}</div>`;
-  });
-});
+window.sendMsg = ()=>{
+  let msg = chatMsg.value;
+  if(msg){
+    let time = new Date().toLocaleTimeString();
+    chatBox.innerHTML += `<div class='msg'><b>${user}:</b> ${msg}<div class='small'>${time}</div></div>`;
+    chatMsg.value="";
+  }
+};
 
-/* Insta (fake preview) */
+window.addCart = (p)=>{
+  cart++;
+  cartCount.innerText = cart;
+};
+
+window.checkout = ()=>{
+  alert("Checkout Done! Items: " + cart);
+  cart = 0;
+  cartCount.innerText = cart;
+};
+
 window.upload = ()=>{
   const file = document.getElementById("file").files[0];
   if(file){
     const url = URL.createObjectURL(file);
-    feed.innerHTML += `<img src="${url}">`;
+    feed.innerHTML += `<div class='card'><img src='${url}'><br><span class='like' onclick='like(this)'>❤️ Like</span> <span>0</span></div>`;
   }
 };
-</script>
 
-</body>
+window.like = (el)=>{
+  let count = el.nextElementSibling;
+  count.innerText = parseInt(count.innerText)+1;
+};
+</script></body>
 </html>
