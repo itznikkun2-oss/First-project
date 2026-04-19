@@ -1,167 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pro Slider Website</title>
+<title>Pro App</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}
-
-body{
-    background:#0f172a;
-    color:white;
-}
-
-/* Navbar */
-nav{
-    display:flex;
-    justify-content:space-between;
-    padding:15px 30px;
-    background:#111;
-}
-
-nav a{
-    color:white;
-    margin-left:15px;
-    text-decoration:none;
-}
-
-/* Hero */
-.hero{
-    text-align:center;
-    padding:40px 20px;
-}
-
-/* Slider */
-.slider{
-    width:90%;
-    max-width:600px;
-    margin:30px auto;
-    position:relative;
-    overflow:hidden;
-    border-radius:15px;
-}
-
-.slides{
-    display:flex;
-    transition:0.5s;
-}
-
-.slides img{
-    width:100%;
-    border-radius:15px;
-}
-
-/* Buttons */
-.btn{
-    position:absolute;
-    top:50%;
-    transform:translateY(-50%);
-    background:rgba(0,0,0,0.6);
-    border:none;
-    color:white;
-    font-size:20px;
-    padding:10px 15px;
-    cursor:pointer;
-    border-radius:50%;
-}
-
-.prev{left:10px;}
-.next{right:10px;}
-
-.btn:hover{
-    background:#38bdf8;
-}
-
-/* Cards */
-.cards{
-    display:flex;
-    justify-content:center;
-    gap:20px;
-    flex-wrap:wrap;
-    padding:40px;
-}
-
-.card{
-    background:white;
-    color:black;
-    padding:20px;
-    width:200px;
-    border-radius:10px;
-    transition:0.3s;
-}
-
-.card:hover{
-    transform:scale(1.1);
-}
-
-footer{
-    text-align:center;
-    padding:15px;
-    background:#111;
-}
+body{font-family:sans-serif;text-align:center;background:#0f172a;color:white}
+input,button{padding:10px;margin:5px;border:none;border-radius:5px}
+button{background:#38bdf8}
 </style>
 </head>
 
 <body>
 
-<nav>
-    <h2>MySite</h2>
-    <div>
-        <a href="#">Home</a>
-        <a href="#">Services</a>
-    </div>
-</nav>
+<h2>Login / Signup 🔐</h2>
 
-<div class="hero">
-    <h1>Pro Slider Website 🚀</h1>
-</div>
+<input id="email" placeholder="Email"><br>
+<input id="pass" type="password" placeholder="Password"><br>
 
-<!-- SLIDER -->
-<div class="slider">
-    <div class="slides" id="slideBox">
-        <img src="https://picsum.photos/600/300?1">
-        <img src="https://picsum.photos/600/300?2">
-        <img src="https://picsum.photos/600/300?3">
-    </div>
+<button onclick="signup()">Signup</button>
+<button onclick="login()">Login</button>
+<button onclick="logout()">Logout</button>
 
-    <button class="btn prev" onclick="prevSlide()">❮</button>
-    <button class="btn next" onclick="nextSlide()">❯</button>
-</div>
+<h3 id="user"></h3>
 
-<!-- CARDS -->
-<div class="cards">
-    <div class="card">🔥 Fast</div>
-    <div class="card">🎨 Design</div>
-    <div class="card">⚡ Smooth</div>
-</div>
+<hr>
 
-<footer>
-    <p>© 2026 My Website</p>
-</footer>
+<h2>Contact Form 📩</h2>
+<input id="msg" placeholder="Message">
+<button onclick="send()">Send</button>
 
-<script>
-let index = 0;
-const slides = document.getElementById("slideBox");
-const total = slides.children.length;
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-function showSlide(){
-    slides.style.transform = `translateX(-${index * 100}%)`;
-}
+/* 🔥 YAHAN APNA CONFIG DALO */
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_DOMAIN",
+  projectId: "YOUR_ID"
+};
 
-function nextSlide(){
-    index = (index + 1) % total;
-    showSlide();
-}
+const app = initializeApp(firebaseConfig);
+const auth = getAuth();
+const db = getFirestore();
 
-function prevSlide(){
-    index = (index - 1 + total) % total;
-    showSlide();
-}
+/* Signup */
+window.signup = ()=>{
+  createUserWithEmailAndPassword(auth,
+    email.value, pass.value)
+    .then(()=>alert("Signup success"))
+    .catch(e=>alert(e.message));
+};
 
-/* Auto slide */
-setInterval(nextSlide,3000);
+/* Login */
+window.login = ()=>{
+  signInWithEmailAndPassword(auth,
+    email.value, pass.value)
+    .then(u=>{
+      document.getElementById("user").innerText = u.user.email;
+    })
+    .catch(e=>alert(e.message));
+};
+
+/* Logout */
+window.logout = ()=>{
+  signOut(auth);
+  user.innerText="";
+};
+
+/* Send message */
+window.send = async ()=>{
+  await addDoc(collection(db,"messages"),{
+    text: msg.value
+  });
+  alert("Saved to database 😎");
+};
 </script>
 
 </body>
