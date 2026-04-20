@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Super App Ultra</title>
+<title>My First Website</title>
 
 <style>
 body{
@@ -12,14 +12,16 @@ body{
   color:white;
 }
 
+/* Header */
 header{
   padding:15px;
   text-align:center;
   font-size:22px;
   font-weight:bold;
-  background:#111827;
+  background:#020617;
 }
 
+/* Nav */
 nav{
   display:flex;
   justify-content:space-around;
@@ -33,8 +35,10 @@ nav button{
   border-radius:10px;
   background:#38bdf8;
   font-weight:bold;
+  cursor:pointer;
 }
 
+/* Sections */
 section{
   display:none;
   padding:15px;
@@ -42,32 +46,45 @@ section{
 
 .active{display:block;}
 
+/* Welcome */
 .big{
-  font-size:28px;
+  font-size:32px;
   text-align:center;
-  margin-top:50px;
+  margin-top:80px;
+  font-weight:bold;
 }
 
-.card{
-  background:white;
-  color:black;
-  margin:10px;
+/* Buttons */
+button{
   padding:10px;
-  border-radius:12px;
-}
-
-img{
-  width:100%;
-  border-radius:10px;
+  border:none;
+  border-radius:8px;
+  margin:5px;
 }
 
 .back{
   background:red;
   color:white;
-  padding:8px;
-  border:none;
-  border-radius:8px;
-  margin-bottom:10px;
+}
+
+/* Cards */
+.card{
+  background:white;
+  color:black;
+  margin:10px 0;
+  padding:10px;
+  border-radius:15px;
+  box-shadow:0 5px 10px rgba(0,0,0,0.3);
+}
+
+.card img{
+  width:100%;
+  border-radius:10px;
+}
+
+.cartBox{
+  margin:10px 0;
+  font-weight:bold;
 }
 
 </style>
@@ -75,45 +92,62 @@ img{
 
 <body>
 
-<header>🚀 Super App ULTRA</header>
+<header>🚀 My First Website</header>
 
 <nav>
 <button onclick="show('home')">🏠 Home</button>
 <button onclick="show('store')">🛒 Store</button>
 <button onclick="openInsta()">📸 Insta</button>
+<button onclick="show('profile')">👤 Profile</button>
 </nav>
 
-<!-- HOME PAGE -->
+<!-- HOME -->
 <section id="home" class="active">
-<div class="big">
-🔥 Welcome to My First Website 🔥
-</div>
+<div class="big">🔥 Welcome to My First Website 🔥</div>
 
-<div style="text-align:center;margin-top:30px;">
+<div style="text-align:center;margin-top:40px;">
 <button onclick="openInsta()">Open Instagram</button>
 </div>
 </section>
 
-<!-- STORE PAGE -->
+<!-- PROFILE -->
+<section id="profile">
+<button class="back" onclick="show('home')">⬅ Back</button>
+
+<h2>Profile</h2>
+<input id="username" placeholder="Enter Name">
+<button onclick="saveUser()">Save</button>
+
+<p id="userShow"></p>
+</section>
+
+<!-- STORE -->
 <section id="store">
 <button class="back" onclick="show('home')">⬅ Back</button>
 
 <h2>T-Shirt Store 👕</h2>
 
+<div class="cartBox">Cart Items: <span id="cart">0</span></div>
+
 <div class="card">
 <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab">
 <p>Cool T-Shirt ₹500</p>
+<button onclick="addCart()">Add to Cart</button>
 </div>
 
 <div class="card">
 <img src="https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb">
 <p>Black Style T-Shirt ₹700</p>
+<button onclick="addCart()">Add to Cart</button>
 </div>
 
 <div class="card">
 <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b">
 <p>Printed T-Shirt ₹650</p>
+<button onclick="addCart()">Add to Cart</button>
 </div>
+
+<button onclick="checkout()">Checkout</button>
 
 </section>
 
@@ -128,6 +162,32 @@ function show(id){
 // Instagram open
 function openInsta(){
   window.open("https://www.instagram.com/nobita__shizuka__0?igsh=MTdibjRya2g0amwyMQ==", "_blank");
+}
+
+// USER
+let user = localStorage.getItem("user") || "Guest";
+userShow.innerText = "Hello " + user;
+
+function saveUser(){
+  let u = username.value;
+  if(u){
+    localStorage.setItem("user",u);
+    userShow.innerText = "Hello " + u;
+  }
+}
+
+// CART
+let cart = 0;
+
+function addCart(){
+  cart++;
+  document.getElementById("cart").innerText = cart;
+}
+
+function checkout(){
+  alert("Order placed! Items: " + cart);
+  cart = 0;
+  document.getElementById("cart").innerText = cart;
 }
 
 </script>
